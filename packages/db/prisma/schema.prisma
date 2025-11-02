@@ -1,0 +1,22 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+// Temporary model to enable client generation when no real DB URL is provided.
+// Replace or remove after introspecting or defining your actual models.
+model Example {
+    id        Int      @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    name      String?
+}
+
+// To pull your existing schema into Prisma, run:
+//   pnpm --filter @repo/db run prisma:db:pull
+//
+// To define new models and manage migrations in Prisma, add model blocks here and then run:
+//   pnpm --filter @repo/db run prisma:migrate:dev
