@@ -1,137 +1,84 @@
-# Turborepo starter
+# Boilerify Starter Monorepo
 
-This Turborepo starter is maintained by the Turborepo core team.
+Monorepo using Turborepo + pnpm with Next.js, Vite, shared UI, and Prisma.
 
-## Using this example
+Each app and package is written in TypeScript and wired together via workspace imports (e.g., `@repo/ui`, `@repo/db`).
 
-Run the following command:
+**Requirements**
+- Node >= 18
+- pnpm (workspace uses `pnpm` + Turbo)
 
-```sh
-npx create-turbo@latest
-```
+**Apps & Packages**
+- `apps/web` — Next.js (App Router) on port 3000
+- `apps/docs` — Next.js docs site on port 3001
+- `apps/marketing` — Vite + React SPA on port 5173
+- `packages/ui` — Shared React UI (Tailwind CSS v4). Exports components and `styles.css`.
+- `packages/db` — Prisma client and schema; builds TS to `dist/`.
+- `packages/eslint-config` — Shared ESLint presets
+- `packages/typescript-config` — Shared TS configs
+- `packages/tailwind-config` — Shared Tailwind/PostCSS config
 
-## What's inside?
+**Getting Started**
+- Install: `pnpm install`
+- Dev (all): `pnpm dev`
+  - Web: http://localhost:3000
+  - Docs: http://localhost:3001
+  - Marketing: http://localhost:5173
 
-This Turborepo includes the following packages/apps:
+**Common Commands (root)**
+- Run all dev tasks: `pnpm dev`
+- Build all apps/packages: `pnpm build`
+- Lint workspace: `pnpm lint`
+- Type-check: `pnpm check-types`
+- Format: `pnpm format`
 
-### Apps and Packages
+**Per-App Commands**
+- Web: `pnpm --filter web dev|build|start|lint|check-types`
+- Docs: `pnpm --filter docs dev|build|start|lint|check-types`
+- Marketing: `pnpm --filter marketing dev|build|preview|lint`
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+**Database (Prisma)**
+- Package: `@repo/db` (see `packages/db`)
+- Local env: set `DATABASE_URL` in `packages/db/.env`
+- Generate client: `pnpm --filter @repo/db prisma:generate`
+- Dev migrate: `pnpm --filter @repo/db prisma:migrate:dev`
+- Push schema: `pnpm --filter @repo/db prisma:db:push`
+- Studio: `pnpm --filter @repo/db prisma:studio`
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+The web app includes a basic health route: `apps/web/app/api/db/health/route.ts`.
 
-### Utilities
+**UI Library**
+- Import components from `@repo/ui`
+- Include shared styles: `import '@repo/ui/styles.css'`
 
-This Turborepo has some additional tools already setup for you:
+**Workspace Imports**
+- Use `@repo/ui` and `@repo/db` from apps (`apps/*`) instead of relative paths.
+- Keep app-specific code in `apps/*` and reusable logic in `packages/*`.
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+**Project Structure**
+- `apps/web` — Next.js app
+- `apps/docs` — Next.js docs app
+- `apps/marketing` — Vite + React app
+- `packages/ui` — Shared React UI (Tailwind v4)
+- `packages/db` — Prisma client + schema
+- `packages/eslint-config` — ESLint presets
+- `packages/typescript-config` — TS configs
+- `packages/tailwind-config` — Tailwind/PostCSS
+- `docs` — Project notes (Tailwind, Prisma, shadcn)
 
-### Build
+**Docs**
+- Tailwind: `docs/tailwindcss.md`
+- Prisma: `docs/prisma.md`
+- shadcn: `docs/shadcn.md`
 
-To build all apps and packages, run the following command:
+**Conventions**
+- Formatting: Prettier; 2-space indentation; LF line endings
+- Linting: `@repo/eslint-config` (zero warnings in CI)
+- Naming: React components `PascalCase.tsx` in `packages/ui`; utilities `kebab-case.ts`; Next.js routes follow folder conventions
+- Styles: Tailwind v4 via `@repo/tailwind-config`; import shared `styles.css` as needed
 
-```
-cd my-turborepo
+**Security**
+- Do not commit secrets. Use local `.env` files (see `packages/db/.env`).
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
-```
-
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
-
-### Develop
-
-Visit `localhost:3024` to interact with your microfrontends.
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
-
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+**License**
+This project is licensed under the terms of the license in `LICENSE`.
